@@ -12,3 +12,18 @@ public class CustomerProcessor implements ItemProcessor<Customer,Customer> {
         return customer;
     }
 }
+
+
+ @Id
+    @Column(name = "customer_id")
+    private Long customerId;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name ="phone_number")
+    private String phoneNumber;
+    @Column(name = "email_address")
+    private String emailAddress;
+    @Column(name = "date_of_birth")
+    private String dob;
