@@ -27,3 +27,60 @@ public class CustomerProcessor implements ItemProcessor<Customer,Customer> {
     private String emailAddress;
     @Column(name = "date_of_birth")
     private String dob;
+
+
+
+package com.stuti.batch_processing.config;
+
+import com.stuti.batch_processing.model.Customer;
+import com.stuti.batch_processing.repository.CustomerRepository;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.validation.ValidationException;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+@Component
+public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
+
+    // Inject the customer repository
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    // Regex pattern for validating email addresses
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+
+    @Override
+    public Customer process(Customer customer) throws Exception {
+        // Validate the email address using the regex pattern
+        if (!isValidEmail(customer.getEmailAddress())) {
+            // Skip processing this item by returning null
+            return null;
+        }
+
+        // Check if customer already exists
+        Optional<Customer> existingCustomer = customerRepository.findById(customer.getCustomerId());
+        if (existingCustomer.isPresent()) {
+            // If customer exists, update existing details
+            Customer updatedCustomer = existingCustomer.get();
+            updatedCustomer.setFirstName(customer.getFirstName());
+            updatedCustomer.setLastName(customer.getLastName());
+            updatedCustomer.setEmailAddress(customer.getEmailAddress());
+            updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
+            updatedCustomer.setDob(customer.getDob());
+
+            // Return updated customer object
+            return updatedCustomer;
+        } else {
+            // If customer does not exist, return new customer for insertion
+            return customer;
+        }
+    }
+
+    // Method to validate email format
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+}
