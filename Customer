@@ -1,0 +1,40 @@
+package com.stuti.batch_processing.model;
+
+import lombok.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Entity
+@Table(name = "Customers")
+public class Customer {
+
+    @Id
+    @Column(name = "customer_id")
+    private Long customerId;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    @Column(name = "email_address")
+    private String emailAddress;
+    @Column(name = "date_of_birth")
+    private String dob;
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+}
