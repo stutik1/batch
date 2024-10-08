@@ -105,22 +105,9 @@ public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
 }
 
 
-
-2024-10-08 23:36:12 [SimpleAsyncTaskExecutor-2] ERROR c.s.b.config.CustomerProcessor - Invalid email address: john for customer ID: 1
-2024-10-08 23:36:12 [SimpleAsyncTaskExecutor-1] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 20/06/1972 for customer ID: 3
-2024-10-08 23:36:12 [SimpleAsyncTaskExecutor-3] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 07/11/1970 for customer ID: 4
-2024-10-08 23:36:12 [SimpleAsyncTaskExecutor-4] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 20/06/1972 for customer ID: 2
-2024-10-08 23:36:12 [main] ERROR o.s.batch.core.step.AbstractStep - Encountered an error executing step csv-step in job importCustomer
-java.lang.NumberFormatException: For input string: "51.E511E1"
-	at sun.misc.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:2043)
-	at sun.misc.FloatingDecimal.parseDouble(FloatingDecimal.java:110)
-	at java.lang.Double.parseDouble(Double.java:538)
-	at java.text.DigitList.getDouble(DigitList.java:169)
-	at java.text.DecimalFormat.parse(DecimalFormat.java:2089)
-	at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1869)
-	at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1514)
-	at java.text.DateFormat.parse(DateFormat.java:364)
-	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:82)
+java.text.ParseException: Unparseable date: "20/06/1972"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
 	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
 	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
 	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
@@ -135,6 +122,203 @@ java.lang.NumberFormatException: For input string: "51.E511E1"
 	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
 	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
 	at java.lang.Thread.run(Thread.java:750)
-2024-10-08 23:36:12 [main] INFO  o.s.batch.core.step.AbstractStep - Step: [csv-step] executed in 94ms
-2024-10-08 23:36:12 [main] INFO  o.s.b.c.l.support.SimpleJobLauncher - Job: [FlowJob: [name=importCustomer]] completed with the following parameters: [{}] and the following status: [FAILED] in 122ms
+2024-10-08 23:46:32 [SimpleAsyncTaskExecutor-4] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 07/11/1970
+java.text.ParseException: Unparseable date: "07/11/1970"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:32 [SimpleAsyncTaskExecutor-3] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 20/06/1972 for customer ID: 2
+2024-10-08 23:46:32 [SimpleAsyncTaskExecutor-4] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 07/11/1970 for customer ID: 4
+2024-10-08 23:46:32 [SimpleAsyncTaskExecutor-4] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 16/07/1969
+java.text.ParseException: Unparseable date: "16/07/1969"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:32 [SimpleAsyncTaskExecutor-4] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 16/07/1969 for customer ID: 8
+2024-10-08 23:46:32 [SimpleAsyncTaskExecutor-3] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 21/05/1995
+java.text.ParseException: Unparseable date: "21/05/1995"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-3] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 21/05/1995 for customer ID: 13
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-16] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 12/12/1968
+java.text.ParseException: Unparseable date: "12/12/1968"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-16] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 12/12/1968 for customer ID: 147
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-31] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 17/03/1979
+java.text.ParseException: Unparseable date: "17/03/1979"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-31] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 17/03/1979 for customer ID: 300
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-55] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 27/07/1981
+java.text.ParseException: Unparseable date: "27/07/1981"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-55] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 27/07/1981 for customer ID: 533
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-66] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 01/05/1982
+java.text.ParseException: Unparseable date: "01/05/1982"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-66] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 01/05/1982 for customer ID: 653
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-69] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 16/02/1965
+java.text.ParseException: Unparseable date: "16/02/1965"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:33 [SimpleAsyncTaskExecutor-69] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 16/02/1965 for customer ID: 672
+2024-10-08 23:46:34 [SimpleAsyncTaskExecutor-95] ERROR c.s.b.config.CustomerProcessor - Date format error for dob: 23/11/1991
+java.text.ParseException: Unparseable date: "23/11/1991"
+	at java.text.DateFormat.parse(DateFormat.java:366)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:34 [SimpleAsyncTaskExecutor-95] ERROR c.s.b.config.CustomerProcessor - Invalid date of birth: 23/11/1991 for customer ID: 947
+2024-10-08 23:46:34 [main] ERROR o.s.batch.core.step.AbstractStep - Encountered an error executing step csv-step in job importCustomer
+java.lang.NumberFormatException: For input string: ""
+	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+	at java.lang.Long.parseLong(Long.java:601)
+	at java.lang.Long.parseLong(Long.java:631)
+	at java.text.DigitList.getLong(DigitList.java:195)
+	at java.text.DecimalFormat.parse(DecimalFormat.java:2084)
+	at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:2162)
+	at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1514)
+	at java.text.DateFormat.parse(DateFormat.java:364)
+	at com.stuti.batch_processing.config.CustomerProcessor.isValidDateOfBirth(CustomerProcessor.java:86)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:59)
+	at com.stuti.batch_processing.config.CustomerProcessor.process(CustomerProcessor.java:17)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:134)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:319)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:210)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:77)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:407)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:331)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:140)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:273)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:82)
+	at org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate$ExecutingRunnable.run(TaskExecutorRepeatTemplate.java:262)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:286)
+	at java.lang.Thread.run(Thread.java:750)
+2024-10-08 23:46:34 [main] INFO  o.s.batch.core.step.AbstractStep - Step: [csv-step] executed in 2s5ms
+2024-10-08 23:46:34 [main] INFO  o.s.b.c.l.support.SimpleJobLauncher - Job: [FlowJob: [name=importCustomer]] completed with the following parameters: [{}] and the following status: [FAILED] in 2s35ms
 
