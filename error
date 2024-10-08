@@ -17,3 +17,107 @@ logging.file.name=logs/application.log
 # Logging pattern (format for log messages)
 logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
 logging.pattern.file=%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+
+
+
+package com.stuti.batch_processing.config;
+
+import com.stuti.batch_processing.model.Customer;
+import com.stuti.batch_processing.repository.CustomerRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.validation.ValidationException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+@Component
+public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    // Logger for tracking errors and invalid data
+    private static final Logger logger = LogManager.getLogger(CustomerProcessor.class);
+
+    // Regex pattern for validating email addresses and phone numbers
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10}$");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+
+    @Override
+    public Customer process(Customer customer) throws Exception {
+        // Validate email
+        if (!isValidEmail(customer.getEmailAddress())) {
+            logger.error("Invalid email address: {} for customer ID: {}", customer.getEmailAddress(), customer.getCustomerId());
+            return null;  // Skip if email is invalid
+        }
+
+        // Validate phone number
+        if (!isValidPhoneNumber(customer.getPhoneNumber())) {
+            logger.error("Invalid phone number: {} for customer ID: {}", customer.getPhoneNumber(), customer.getCustomerId());
+            return null;  // Skip if phone number is invalid
+        }
+
+        // Validate first and last name (should not be null or blank)
+        if (customer.getFirstName() == null || customer.getFirstName().trim().isEmpty()) {
+            logger.error("First name is missing for customer ID: {}", customer.getCustomerId());
+            return null;  // Skip if first name is blank
+        }
+
+        if (customer.getLastName() == null || customer.getLastName().trim().isEmpty()) {
+            logger.error("Last name is missing for customer ID: {}", customer.getCustomerId());
+            return null;  // Skip if last name is blank
+        }
+
+        // Validate date of birth (dob) format
+        if (!isValidDateOfBirth(customer.getDob())) {
+            logger.error("Invalid date of birth: {} for customer ID: {}", customer.getDob(), customer.getCustomerId());
+            return null;  // Skip if dob format is invalid
+        }
+
+        // Check if customer already exists in the repository
+        Optional<Customer> existingCustomer = customerRepository.findById(customer.getCustomerId());
+        if (existingCustomer.isPresent()) {
+            // If customer exists, update the existing record
+            Customer updatedCustomer = existingCustomer.get();
+            updatedCustomer.setFirstName(customer.getFirstName());
+            updatedCustomer.setLastName(customer.getLastName());
+            updatedCustomer.setEmailAddress(customer.getEmailAddress());
+            updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
+            updatedCustomer.setDob(customer.getDob());
+
+            return updatedCustomer;  // Return updated customer for saving to the database
+        } else {
+            // If customer does not exist, return new customer for insertion
+            return customer;
+        }
+    }
+
+    // Method to validate email format
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+
+    // Method to validate phone number format (must be 10 digits)
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return PHONE_PATTERN.matcher(phoneNumber).matches();
+    }
+
+    // Method to validate date of birth format (must be in the format dd/MM/yyyy)
+    private boolean isValidDateOfBirth(String dob) {
+        try {
+            DATE_FORMAT.setLenient(false);
+            DATE_FORMAT.parse(dob);  // Parse dob to check if the format is valid
+            return true;
+        } catch (ParseException e) {
+            return false;  // Invalid date format
+        }
+    }
+}
+
