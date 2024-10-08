@@ -1,34 +1,3 @@
-package com.stuti.batch_processing.config;
-
-import com.stuti.batch_processing.model.Customer;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.stereotype.Component;
-
-@Component
-public class CustomerProcessor implements ItemProcessor<Customer,Customer> {
-
-    @Override
-    public Customer process(Customer customer) throws Exception {
-        return customer;
-    }
-}
-
-
- @Id
-    @Column(name = "customer_id")
-    private Long customerId;
-    @Column(name = "first_name")
-    private String firstName;
-    @Column(name = "last_name")
-    private String lastName;
-    @Column(name ="phone_number")
-    private String phoneNumber;
-    @Column(name = "email_address")
-    private String emailAddress;
-    @Column(name = "date_of_birth")
-    private String dob;
-
-
 
 package com.stuti.batch_processing.config;
 
