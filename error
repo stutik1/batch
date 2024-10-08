@@ -33,19 +33,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ValidationException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Component
 public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
 
+    private static final Logger logger = LogManager.getLogger(CustomerProcessor.class);  // Log4j2 logger
+
     @Autowired
     private CustomerRepository customerRepository;
 
-    // Logger for tracking errors and invalid data
-    private static final Logger logger = LogManager.getLogger(CustomerProcessor.class);
-
-    // Regex pattern for validating email addresses and phone numbers
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10}$");
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
@@ -55,48 +52,34 @@ public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
         // Validate email
         if (!isValidEmail(customer.getEmailAddress())) {
             logger.error("Invalid email address: {} for customer ID: {}", customer.getEmailAddress(), customer.getCustomerId());
-            return null;  // Skip if email is invalid
+            return null;
         }
 
         // Validate phone number
         if (!isValidPhoneNumber(customer.getPhoneNumber())) {
             logger.error("Invalid phone number: {} for customer ID: {}", customer.getPhoneNumber(), customer.getCustomerId());
-            return null;  // Skip if phone number is invalid
+            return null;
         }
 
         // Validate first and last name (should not be null or blank)
         if (customer.getFirstName() == null || customer.getFirstName().trim().isEmpty()) {
             logger.error("First name is missing for customer ID: {}", customer.getCustomerId());
-            return null;  // Skip if first name is blank
+            return null;
         }
 
         if (customer.getLastName() == null || customer.getLastName().trim().isEmpty()) {
             logger.error("Last name is missing for customer ID: {}", customer.getCustomerId());
-            return null;  // Skip if last name is blank
+            return null;
         }
 
         // Validate date of birth (dob) format
         if (!isValidDateOfBirth(customer.getDob())) {
             logger.error("Invalid date of birth: {} for customer ID: {}", customer.getDob(), customer.getCustomerId());
-            return null;  // Skip if dob format is invalid
+            return null;
         }
 
-        // Check if customer already exists in the repository
-        Optional<Customer> existingCustomer = customerRepository.findById(customer.getCustomerId());
-        if (existingCustomer.isPresent()) {
-            // If customer exists, update the existing record
-            Customer updatedCustomer = existingCustomer.get();
-            updatedCustomer.setFirstName(customer.getFirstName());
-            updatedCustomer.setLastName(customer.getLastName());
-            updatedCustomer.setEmailAddress(customer.getEmailAddress());
-            updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
-            updatedCustomer.setDob(customer.getDob());
-
-            return updatedCustomer;  // Return updated customer for saving to the database
-        } else {
-            // If customer does not exist, return new customer for insertion
-            return customer;
-        }
+        // Simply return the customer; Spring Data JPA will handle insert or update
+        return customer;
     }
 
     // Method to validate email format
@@ -120,4 +103,5 @@ public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
         }
     }
 }
+
 
