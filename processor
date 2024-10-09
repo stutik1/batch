@@ -1,38 +1,79 @@
-
 package com.stuti.batch_processing.config;
 
 import com.stuti.batch_processing.model.Customer;
 import com.stuti.batch_processing.repository.CustomerRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.ValidationException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Component
 public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
 
-    // Inject the customer repository
+    private static final Logger logger = LogManager.getLogger(CustomerProcessor.class);
+
     @Autowired
     private CustomerRepository customerRepository;
 
-    // Regex pattern for validating email addresses
+    // Regular expressions to validate email and phone number
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{10}$");
+
+    // Path for the invalid report file
+    private static final String REPORT_FILE_PATH = "invalid_customers_report.csv";
+
+    // BufferedWriter for the report file
+    private BufferedWriter reportWriter;
+
+    public CustomerProcessor() throws IOException {
+        // Open file in append mode and initialize the writer
+        logger.info("Initializing report file at path: {}", REPORT_FILE_PATH);
+        reportWriter = new BufferedWriter(new FileWriter(REPORT_FILE_PATH, true));
+        reportWriter.write("Customer ID,First Name,Last Name,Phone Number,Email Address,Reason\n");
+    }
 
     @Override
     public Customer process(Customer customer) throws Exception {
-        // Validate the email address using the regex pattern
+        StringBuilder reasons = new StringBuilder();
+
+        // Validate first name
+        if (!isValidFirstName(customer.getFirstName())) {
+            reasons.append("Invalid First Name. ");
+        }
+
+        // Validate last name
+        if (!isValidLastName(customer.getLastName())) {
+            reasons.append("Invalid Last Name. ");
+        }
+
+        // Validate phone number
+        if (!isValidPhoneNumber(customer.getPhoneNumber())) {
+            reasons.append("Invalid Phone Number. ");
+        }
+
+        // Validate email address
         if (!isValidEmail(customer.getEmailAddress())) {
-            // Skip processing this item by returning null
-            return null;
+            reasons.append("Invalid Email Address. ");
+        }
+
+        // If there are validation failures, write the record to the report file
+        if (reasons.length() > 0) {
+            writeInvalidRecordToReport(customer, reasons.toString());
+            logger.error("Invalid record for customer ID: {}. Reason: {}", customer.getCustomerId(), reasons.toString());
+            return null;  // Skip the record
         }
 
         // Check if customer already exists
         Optional<Customer> existingCustomer = customerRepository.findById(customer.getCustomerId());
         if (existingCustomer.isPresent()) {
-            // If customer exists, update existing details
+            // Update existing customer
             Customer updatedCustomer = existingCustomer.get();
             updatedCustomer.setFirstName(customer.getFirstName());
             updatedCustomer.setLastName(customer.getLastName());
@@ -40,16 +81,51 @@ public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
             updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
             updatedCustomer.setDob(customer.getDob());
 
-            // Return updated customer object
-            return updatedCustomer;
+            logger.info("Updating customer with ID: {}", customer.getCustomerId());
+            return updatedCustomer;  // Return updated customer
         } else {
-            // If customer does not exist, return new customer for insertion
-            return customer;
+            logger.info("Inserting new customer with ID: {}", customer.getCustomerId());
+            return customer;  // Return new customer for insertion
         }
+    }
+
+    // Method to write invalid records to the report file
+    private void writeInvalidRecordToReport(Customer customer, String reason) throws IOException {
+        reportWriter.write(String.format("%s,%s,%s,%s,%s,%s\n",
+                customer.getCustomerId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getPhoneNumber(),
+                customer.getEmailAddress(),
+                reason
+        ));
+        reportWriter.flush();  // Ensure the data is written to the file immediately
+        logger.info("Written invalid customer with ID: {} to report", customer.getCustomerId());
     }
 
     // Method to validate email format
     private boolean isValidEmail(String email) {
-        return EMAIL_PATTERN.matcher(email).matches();
+        return email != null && EMAIL_PATTERN.matcher(email.trim()).matches();
+    }
+
+    // Method to validate phone number format (must be 10 digits)
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return phoneNumber != null && PHONE_PATTERN.matcher(phoneNumber.trim()).matches();
+    }
+
+    // Method to validate first name (must not be null or empty, and have at least 2 characters)
+    private boolean isValidFirstName(String firstName) {
+        return firstName != null && !firstName.trim().isEmpty() && firstName.trim().length() > 2;
+    }
+
+    // Method to validate last name (must not be null or empty, and have at least 2 characters)
+    private boolean isValidLastName(String lastName) {
+        return lastName != null && !lastName.trim().isEmpty() && lastName.trim().length() > 2;
+    }
+
+    // Close the report file when processing is complete
+    public void closeReportFile() throws IOException {
+        reportWriter.close();
+        logger.info("Report file closed successfully.");
     }
 }
