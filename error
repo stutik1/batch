@@ -3,7 +3,7 @@ java: constructor CustomerProcessor in class com.stuti.batch_processing.config.C
   found: no arguments
   reason: actual and formal argument lists differ in length
 
-
+4,Mike,Smith,07/11/1970,9789023982,mike.smith@example.com
 
 # Log level for CustomerProcessor
 logging.level.com.stuti.batch_processing.config.CustomerProcessor=error
