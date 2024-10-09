@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Component
-public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
+public class CustomersProcessor implements ItemProcessor<Customer, Customer> {
 
     private static final Logger logger = LogManager.getLogger(CustomerProcessor.class);
 
@@ -32,10 +32,11 @@ public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
     // BufferedWriter for the report file
     private BufferedWriter reportWriter;
 
-    public CustomerProcessor() throws IOException {
+    public CustomersProcessor() throws IOException {
         // Open file in append mode and initialize the writer
         logger.info("Initializing report file at path: {}", REPORT_FILE_PATH);
         reportWriter = new BufferedWriter(new FileWriter(REPORT_FILE_PATH, true));
+        // Write the header for the CSV file
         reportWriter.write("Customer ID,First Name,Last Name,Phone Number,Email Address,Reason\n");
     }
 
@@ -70,23 +71,8 @@ public class CustomerProcessor implements ItemProcessor<Customer, Customer> {
             return null;  // Skip the record
         }
 
-        // Check if customer already exists
-        Optional<Customer> existingCustomer = customerRepository.findById(customer.getCustomerId());
-        if (existingCustomer.isPresent()) {
-            // Update existing customer
-            Customer updatedCustomer = existingCustomer.get();
-            updatedCustomer.setFirstName(customer.getFirstName());
-            updatedCustomer.setLastName(customer.getLastName());
-            updatedCustomer.setEmailAddress(customer.getEmailAddress());
-            updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
-            updatedCustomer.setDob(customer.getDob());
-
-            logger.info("Updating customer with ID: {}", customer.getCustomerId());
-            return updatedCustomer;  // Return updated customer
-        } else {
-            logger.info("Inserting new customer with ID: {}", customer.getCustomerId());
-            return customer;  // Return new customer for insertion
-        }
+        // If the record is valid, return it for further processing (insertion or update)
+        return customer;
     }
 
     // Method to write invalid records to the report file
